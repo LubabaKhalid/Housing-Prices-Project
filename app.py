@@ -8,48 +8,26 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-# Custom CSS to change background color to coral and ensure all elements are affected
-st.markdown("""
-    <style>
-        /* Apply background color to the entire page */
-        body {
-            background-color: #FF7F50;  /* Coral background */
-        }
+import streamlit.components.v1 as components
 
-        /* Apply background color to the main container */
-        .reportview-container {
-            background-color: #FF7F50 !important;  /* Coral background */
-        }
+# Define your custom HTML for the background
+background_html = """
+<style>
+body {
+background-image: url('C:\Users\PMLS\Desktop\Housing-Prices-Project\house.jpg');
+background-size: cover;
+}
+</style>
+"""
 
-        /* Ensure that text elements are properly colored */
-        .css-ffhzg2, .stMarkdown, .stText, .stHeader, .stSubheader, h1, h2, h3, h4 {
-            color: #333333 !important;  /* Dark Gray text color */
-        }
-
-        /* Customize the button color */
-        .stButton>button {
-            background-color: #4CAF50 !important;
-            color: white !important;
-            border: none !important;
-        }
-
-        /* Adjust font styling for headers */
-        h1, h2, h3, h4 {
-            color: #003366 !important;
-        }
-
-        /* Additional styling for Streamlit sidebar */
-        .css-1d391kg {
-            color: #333333 !important;
-        }
-    </style>
-""", unsafe_allow_html=True)
+# Inject custom HTML
+components.html(background_html, height=0)
 
 # Load the dataset
 df = pd.read_csv('housing_prices.csv')
 
 # Custom Title and Styling
-st.markdown("<h1 style='text-align: center; color: #003366; font-size: 40px; font-weight: bold;'>Enhanced Housing Price Prediction Analysis</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #003366; font-size: 40px; font-weight: bold;'>Housing Price Prediction Analysis</h1>", unsafe_allow_html=True)
 st.markdown("<h3 style='text-align: center; color: #003366; font-size: 24px;'>Explore, visualize, and analyze housing data with ease.</h3>", unsafe_allow_html=True)
 
 # Create columns for better layout
