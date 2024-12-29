@@ -14,11 +14,12 @@ import streamlit.components.v1 as components
 background_html = """
 <style>
 body {
-background-image: url('C:\Users\PMLS\Desktop\Housing-Prices-Project\house.jpg');
+background-image: url('C:/Users/PMLS/Desktop/Housing-Prices-Project/house.jpg');
 background-size: cover;
 }
 </style>
 """
+
 
 # Inject custom HTML
 components.html(background_html, height=0)
