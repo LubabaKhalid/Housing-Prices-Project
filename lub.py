@@ -29,8 +29,8 @@ st.write("Data Types and Unique Value Counts:")
 st.write(df.dtypes)  # Show data types
 st.write(df.nunique())  # Show unique value counts for each column
 
-# 1. Visualize Price Distribution (Histogram with KDE)
 st.write("Histogram Plot")
+# 1. Visualize Price Distribution (Histogram with KDE)
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.histplot(df['price'], kde=True, bins=30, ax=ax)
 st.pyplot(fig)  # Display price distribution
@@ -40,8 +40,8 @@ missing_data = df.isnull().sum()
 st.write("Missing Values:")
 st.write(missing_data)  # Show the count of missing values per column
 
-# 3. Visualize missing data as heatmap
 st.write("Heatmap")
+# 3. Visualize missing data as heatmap
 fig, ax = plt.subplots(figsize=(10, 6))
 sns.heatmap(df.isnull(), cbar=False, cmap='viridis', ax=ax)
 st.pyplot(fig)  # Display the heatmap for missing values
@@ -52,15 +52,15 @@ df = pd.get_dummies(df, drop_first=True)
 # 5. Ensure all columns are numeric (for scaling and machine learning)
 df = df.apply(pd.to_numeric, errors='coerce')
 
+st.write("Heatmap")
 # 6. Correlation Heatmap for all numeric features
-st.write("Correlation Heatmap")
 fig, ax = plt.subplots(figsize=(12, 8))
 sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt='.2f', ax=ax)
 ax.set_title("Correlation Heatmap")
 st.pyplot(fig)
 
-# 7. Pairwise relationships using seaborn pairplot
 st.write("Pair Plot")
+# 7. Pairwise relationships using seaborn pairplot
 pairplot_fig = sns.pairplot(df[['price', 'area', 'bedrooms', 'bathrooms', 'stories', 'parking']])
 st.pyplot(pairplot_fig)
 
@@ -87,15 +87,15 @@ sns.boxplot(x=df['parking'], y=df['price'], ax=ax)
 ax.set_title("Price Distribution by Parking Availability")
 st.pyplot(fig)
 
-# 11. Relationship between 'stories' and 'price'
 st.write("Box Plot")
+# 11. Relationship between 'stories' and 'price'
 fig, ax = plt.subplots(figsize=(8, 6))
 sns.boxplot(x=df['stories'], y=df['price'], ax=ax)
 ax.set_title("Price Distribution by Number of Stories")
 st.pyplot(fig)
 
-# 12. Pairplot for bedrooms and bathrooms relationship to price
 st.write("Pair Plot")
+# 12. Pairplot for bedrooms and bathrooms relationship to price
 pairplot_bed_bath = sns.pairplot(df[['price', 'bedrooms', 'bathrooms']])
 st.pyplot(pairplot_bed_bath)
 
@@ -128,14 +128,14 @@ furnishing_status = df[['furnishingstatus_semi-furnished', 'furnishingstatus_unf
 st.write("Furnishing Status Distribution:")
 st.write(furnishing_status)
 
-# 15. Price Distribution by Furnishing Status (Boxplot)
 st.write("Box Plot")
+# 15. Price Distribution by Furnishing Status (Boxplot)
 fig, ax = plt.subplots(figsize=(8, 6))
 sns.boxplot(x=df['furnishingstatus_semi-furnished'], y=df['price'], ax=ax)
 ax.set_title("Price Distribution by Semi-furnished Status")
 st.pyplot(fig)
 
-# 16. Train-test split, Random Forest Model Evaluation (MAE, MSE, R^2)
+# Train-test split, Random Forest Model Evaluation (MAE, MSE, R^2)
 X_train, X_test, y_train, y_test = train_test_split(scaled_features, y, test_size=0.2, random_state=42)
 
 # Train the Random Forest model
