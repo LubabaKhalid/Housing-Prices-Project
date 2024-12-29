@@ -41,14 +41,19 @@ sns.heatmap(df.isnull(), cbar=False, cmap='viridis', ax=ax)
 st.pyplot(fig)  # Display the heatmap for missing values
 
 # Perform one-hot encoding for categorical columns (convert to dummy variables)
-df = pd.get_dummies(df, drop_first=True)
+categorical_columns = df.select_dtypes(include=['object']).columns
+df_encoded = pd.get_dummies(df, columns=categorical_columns, drop_first=True)
+
+# Check the columns after one-hot encoding
+st.write("Columns after One-Hot Encoding:")
+st.write(df_encoded.columns)
 
 # Ensure all columns are numeric (for scaling and machine learning)
-df = df.apply(pd.to_numeric, errors='coerce')
+df_encoded = df_encoded.apply(pd.to_numeric, errors='coerce')
 
 # Separate features (X) and target (y)
-X = df.drop('price', axis=1)  # Features
-y = df['price']               # Target
+X = df_encoded.drop('price', axis=1)  # Features
+y = df_encoded['price']               # Target
 
 # Scaling the features using StandardScaler
 scaler = StandardScaler()
@@ -61,7 +66,6 @@ X_train, X_test, y_train, y_test = train_test_split(scaled_features, y, test_siz
 model = RandomForestRegressor(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
-# Make predictions on the test set
 # Make predictions on the test set
 y_pred = model.predict(X_test)
 
@@ -97,7 +101,6 @@ except RuntimeError:
     plt.title('Residual Plot (No Smoothing)')
     st.pyplot(fig)
 
-
 # Visualize feature importance from the Random Forest model
 feature_importance = model.feature_importances_
 sorted_idx = np.argsort(feature_importance)[::-1]
@@ -111,24 +114,26 @@ st.pyplot(fig)
 
 # Check for outliers using boxplot (e.g., for the 'price' feature)
 fig, ax = plt.subplots(figsize=(8, 6))
-sns.boxplot(x=df['price'], ax=ax)
+sns.boxplot(x=df_encoded['price'], ax=ax)
 st.pyplot(fig)  # Display boxplot for price
 
-# Explore the relationship between 'sqft_living' and 'price' with a scatter plot
+# Explore the relationship between 'area' and 'price' with a scatter plot
 fig, ax = plt.subplots(figsize=(8, 6))
-sns.scatterplot(x=df['sqft_living'], y=df['price'], ax=ax)
-plt.title("Price vs Square Footage of Living Area")
-plt.xlabel("Square Footage")
-plt.ylabel("Price")
+sns.scatterplot(x=df_encoded['area'], y=df_encoded['price'], ax=ax)
+ax.set_title("Price vs Area")
+ax.set_xlabel("Area")
+ax.set_ylabel("Price")
 st.pyplot(fig)
 
 # Correlation Heatmap for all numeric features
 fig, ax = plt.subplots(figsize=(12, 8))
-sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt='.2f', ax=ax)
-plt.title("Correlation Heatmap")
+sns.heatmap(df_encoded.corr(), annot=True, cmap='coolwarm', fmt='.2f', ax=ax)
+ax.set_title("Correlation Heatmap")
 st.pyplot(fig)
 
 # Pairwise relationship of features related to price
-sns.pairplot(df[['price', 'sqft_living', 'bedrooms', 'bathrooms', 'sqft_lot']])
-st.pyplot()
-
+try:
+    pairplot_fig = sns.pairplot(df_encoded[['price', 'area', 'bedrooms', 'bathrooms', 'stories']])
+    st.pyplot(pairplot_fig)
+except KeyError as e:
+    st.write(f"Error: The following columns are missing: {e}")
