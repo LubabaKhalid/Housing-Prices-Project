@@ -36,3 +36,15 @@ st.write("Missing Values:", missing_data)
 
 # Fill missing values (for simplicity, using mean)
 df.fillna(df.mean(), inplace=True)
+
+
+df = pd.get_dummies(df, drop_first=True)
+
+scaler = StandardScaler()
+scaled_features = scaler.fit_transform(df.drop('price', axis=1))  # Scale features excluding the target
+
+
+X = scaled_features
+y = df['price']
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
