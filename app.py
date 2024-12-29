@@ -62,6 +62,7 @@ model = RandomForestRegressor(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
 
 # Make predictions on the test set
+# Make predictions on the test set
 y_pred = model.predict(X_test)
 
 # Model Evaluation: Displaying performance metrics
@@ -74,13 +75,28 @@ st.write(f'Mean Absolute Error: {mae:.2f}')
 st.write(f'Mean Squared Error: {mse:.2f}')
 st.write(f'R-squared: {r2:.2f}')
 
-# Visualize the residuals (Prediction Errors)
-fig, ax = plt.subplots(figsize=(8, 6))
-sns.residplot(y_pred, y_test - y_pred, lowess=True, ax=ax)
-plt.xlabel('Predicted Values')
-plt.ylabel('Residuals (Error)')
-plt.title('Residual Plot')
-st.pyplot(fig)
+# Compute the residuals (errors)
+residuals = y_test - y_pred
+
+# Option 1: Residual plot with lowess smoothing (requires statsmodels)
+try:
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.residplot(x=y_pred, y=residuals, lowess=True, ax=ax)
+    plt.xlabel('Predicted Values')
+    plt.ylabel('Residuals (Error)')
+    plt.title('Residual Plot (Lowess Smoothed)')
+    st.pyplot(fig)
+except RuntimeError:
+    st.write("Error: `lowess=True` requires statsmodels. Switching to non-smoothed plot.")
+
+    # Option 2: Residual plot without smoothing (no statsmodels needed)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.residplot(x=y_pred, y=residuals, ax=ax)
+    plt.xlabel('Predicted Values')
+    plt.ylabel('Residuals (Error)')
+    plt.title('Residual Plot (No Smoothing)')
+    st.pyplot(fig)
+
 
 # Visualize feature importance from the Random Forest model
 feature_importance = model.feature_importances_
