@@ -21,3 +21,18 @@ st.write(df.describe())
 st.write("Data Types and Unique Value Counts:")
 st.write(df.dtypes)
 st.write(df.nunique())
+
+
+
+
+st.write("Price Distribution:")
+plt.figure(figsize=(8, 5))
+sns.histplot(df['price'], kde=True, bins=30)
+st.pyplot()
+
+# Check for missing values
+missing_data = df.isnull().sum()
+st.write("Missing Values:", missing_data)
+
+# Fill missing values (for simplicity, using mean)
+df.fillna(df.mean(), inplace=True)
