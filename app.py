@@ -122,6 +122,22 @@ if button_visualize:
     sns.boxplot(x=df['bedrooms'], y=df['price'], ax=ax, palette='Set2')
     ax.set_title("Price Distribution by Bedrooms", fontsize=22, fontweight='bold')
     st.pyplot(fig)
+    
+    # Scatter Plot - Relationship between 'area' and 'price'
+    st.write("<h4 style='font-size: 20px; font-weight: bold;'>Price vs Area</h4>", unsafe_allow_html=True)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.scatterplot(x=df['area'], y=df['price'], ax=ax)
+    ax.set_title("Price vs Area", fontsize=22, fontweight='bold')
+    ax.set_xlabel("Area", fontsize=18)
+    ax.set_ylabel("Price", fontsize=18)
+    st.pyplot(fig)
+
+    # Boxplot of Price Distribution by Parking Availability
+    st.write("<h4 style='font-size: 20px; font-weight: bold;'>Price Distribution by Parking Availability</h4>", unsafe_allow_html=True)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.boxplot(x=df['parking'], y=df['price'], ax=ax)
+    ax.set_title("Price Distribution by Parking", fontsize=22, fontweight='bold')
+    st.pyplot(fig)
 
 # Model Evaluation Section
 if button_model:
