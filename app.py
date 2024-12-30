@@ -224,6 +224,47 @@ if button_model:
     st.write(f'Mean Squared Error: {mse:.2f}')
     st.write(f'R-squared: {r2:.2f}')
 
+
+# Conclusion Button in Sidebar
+button_conclusion = st.sidebar.button("Show Conclusion")
+
+# Display Conclusion Section
+if button_conclusion:
+    st.markdown("<h2 style='text-align: center; font-size: 32px; color: white;'>Conclusion: Key Takeaways from the Housing Price Prediction Project</h2>", unsafe_allow_html=True)
+
+    # Displaying the data under key takeaways in a more structured format
+    st.markdown("<h4 style='font-size: 24px; font-weight: bold; color: white;'>Data Exploration & Preprocessing:</h4>", unsafe_allow_html=True)
+    st.markdown("""
+    - The dataset provided valuable insights into the features influencing housing prices.
+    - Key attributes such as area, number of bedrooms, bathrooms, and stories were found to be significant predictors of house prices.
+    - Preprocessing steps like handling missing values and encoding categorical variables (e.g., converting "yes" and "no" to numeric values) were crucial in making the data suitable for modeling.
+    - We also performed feature scaling to normalize the numerical data, ensuring the model performed optimally.
+    """, unsafe_allow_html=True)
+
+    st.markdown("<h4 style='font-size: 24px; font-weight: bold; color: white;'>Visualizations:</h4>", unsafe_allow_html=True)
+    st.markdown("""
+    - **Price Distribution**: The price distribution of the houses exhibited some skewness, which is common in real estate data where luxury properties can significantly affect price ranges.
+    - **Correlation Heatmap**: The correlation heatmap highlighted strong relationships between certain variables, particularly area, bedrooms, and parking, with house prices.
+    - **Pairplots and Boxplots**: Visualizing data through pairplots and boxplots provided further insights into how various features such as bedrooms and area relate to house prices, helping identify potential outliers and relationships.
+    """, unsafe_allow_html=True)
+
+    st.markdown("<h4 style='font-size: 24px; font-weight: bold; color: white;'>Modeling & Evaluation:</h4>", unsafe_allow_html=True)
+    st.markdown("""
+    - **Random Forest Regressor**: The model was trained using the Random Forest algorithm, which proved effective in predicting housing prices by learning from complex patterns in the data. Random Forest handles high-dimensional data well and provides useful feature importance insights.
+    - **Evaluation Metrics**: The performance metrics (MAE, MSE, R²) confirmed that the model can predict house prices with a reasonable degree of accuracy. The R² value indicated a good fit, though improvements could be made by fine-tuning the model or experimenting with different algorithms.
+    """, unsafe_allow_html=True)
+
+    st.markdown("<h4 style='font-size: 24px; font-weight: bold; color: white;'>Feature Importance:</h4>", unsafe_allow_html=True)
+    st.markdown("""
+    - The area of the house, the number of bedrooms, and parking availability emerged as the most influential factors driving house prices, according to the feature importance plot.
+    - This highlights the importance of spacious properties and key amenities in determining market value.
+    """, unsafe_allow_html=True)
+
+    st.markdown("<h4 style='font-size: 24px; font-weight: bold; color: white;'>Potential Improvements:</h4>", unsafe_allow_html=True)
+    st.markdown("""
+    - Further model improvement could involve tuning hyperparameters for the Random Forest model or exploring other algorithms like Gradient Boosting or XGBoost.
+    - Additional feature engineering, such as including external factors like location, proximity to amenities, or even economic indicators, could improve prediction accuracy.
+    """, unsafe_allow_html=True)
+
 # End of content section
 st.markdown('</div>', unsafe_allow_html=True)
-
