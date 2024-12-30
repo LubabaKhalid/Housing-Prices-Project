@@ -76,7 +76,7 @@ st.markdown("<h1 style='text-align: center; font-size: 40px; font-weight: bold;'
 st.markdown('<div id="main">', unsafe_allow_html=True)
 
 # Create a sidebar for buttons and interactions
-st.sidebar.title("Navigation")
+
 button_overview = st.sidebar.button("Dataset Overview")
 button_summary = st.sidebar.button("Summary Statistics")
 
@@ -109,10 +109,25 @@ if visualization_option == "Visualizations":
         st.pyplot(fig)
 
     elif visualization_choice == "Correlation Heatmap":
+        categorical_cols = df.select_dtypes(include=['object']).columns
+
+    # Use .map() to convert categorical columns like 'yes'/'no' to numeric values
+        for col in categorical_cols:
+            if df[col].dtype == 'object':
+                df[col] = df[col].map({'yes': 1, 'no': 0}).fillna(df[col])
+
+        # Perform one-hot encoding for any remaining categorical columns
+        df = pd.get_dummies(df, drop_first=True)
+
+        # Now calculate and plot the correlation heatmap
         st.write("<h4 style='font-size: 20px; font-weight: bold;'>Correlation Heatmap</h4>", unsafe_allow_html=True)
+
+        # Generate the heatmap
         fig, ax = plt.subplots(figsize=(12, 8))
         sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt='.2f', ax=ax)
         ax.set_title("Feature Correlation", fontsize=22, fontweight='bold')
+
+        # Display the plot in Streamlit
         st.pyplot(fig)
 
     elif visualization_choice == "Pairplot of Selected Features":
