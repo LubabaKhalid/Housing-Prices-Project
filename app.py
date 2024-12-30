@@ -10,21 +10,35 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import streamlit.components.v1 as components
 
 # Custom CSS to style the buttons
+# Custom CSS to style the sidebar and buttons
 st.markdown("""
     <style>
+    /* Change the sidebar background color to white */
+    .css-1d391kg {
+        background-color: black;  /* White background */
+    }
+
+    /* Style the buttons in the sidebar */
     .stButton > button {
-        background-color: #FFFFFF; /* White button */
-        color: #FF7F50
+        background-color: white;  /* Navy Blue */
+        color: #000080;  /* White Text */
         font-weight: bold;
         border-radius: 8px;
         padding: 10px;
         width: 100%;  /* Full width button */
     }
+    
     .stButton > button:hover {
         background-color: #000066;  /* Darker Navy Blue for hover effect */
     }
+    
+    /* Change the color of the sidebar text to black */
+    .css-1p7z1f8 {
+        color: white;
+    }
     </style>
 """, unsafe_allow_html=True)
+
 
 # Set background image
 background_image_path = r"C:\Users\PMLS\Desktop\Housing-Prices-Project\images\house.jpg"
