@@ -9,6 +9,23 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import streamlit.components.v1 as components
 
+# Custom CSS to style the buttons
+st.markdown("""
+    <style>
+    .stButton > button {
+        background-color: #FFFFFF; /* White button */
+        color: #FF7F50
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 10px;
+        width: 100%;  /* Full width button */
+    }
+    .stButton > button:hover {
+        background-color: #000066;  /* Darker Navy Blue for hover effect */
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # Set background image
 background_image_path = r"C:\Users\PMLS\Desktop\Housing-Prices-Project\images\house.jpg"
 background_html = """
@@ -55,7 +72,7 @@ button_model = st.sidebar.button("Show Model Evaluation")
 # Display Dataset Overview Section
 if button_overview:
     st.write("<h4 style='font-size: 20px; font-weight: bold;'>Dataset Overview</h4>", unsafe_allow_html=True)
-    st.dataframe(df.head())  # Display first few rows of the dataset
+    st.dataframe(df.head(10))  # Display first few rows of the dataset
 
 # Display Summary Statistics Section
 if button_summary:
@@ -91,7 +108,7 @@ if button_visualize:
 
     categorical_cols = df.select_dtypes(include=['object']).columns
 
-# Use .map() to convert categorical columns like 'yes'/'no' to numeric values
+    # Use .map() to convert categorical columns like 'yes'/'no' to numeric values
     for col in categorical_cols:
         if df[col].dtype == 'object':
             df[col] = df[col].map({'yes': 1, 'no': 0}).fillna(df[col])
