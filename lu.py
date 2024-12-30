@@ -10,6 +10,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 import streamlit.components.v1 as components
 
 # Custom CSS to style the buttons
+# Custom CSS to style the sidebar and buttons
 st.markdown("""
     <style>
     /* Change the sidebar background color to white */
@@ -92,88 +93,82 @@ if button_summary:
     st.write("<h4 style='font-size: 20px; font-weight: bold;'>Summary Statistics</h4>", unsafe_allow_html=True)
     st.write(df.describe())  # Summary statistics for numerical features
 
-# Create a column layout for better visualizations display
+# Create columns for better visualizations layout
 col1, col2 = st.columns(2)
 
 # Display Visualizations Section
 if button_visualize:
-    st.write("<h4 style='font-size: 20px; font-weight: bold;'>Visualizations</h4>", unsafe_allow_html=True)
-
-    # Button for each visualization
-    button_data_types = st.button("Show Data Types and Unique Value Counts")
-    button_price_distribution = st.button("Show Price Distribution")
-    button_missing_values = st.button("Show Missing Values Heatmap")
-    button_correlation = st.button("Show Correlation Heatmap")
-    button_pairplot = st.button("Show Pairplot of Selected Features")
-    button_boxplot_bedrooms = st.button("Show Price Distribution by Bedrooms")
-    button_scatter_area_price = st.button("Show Price vs Area")
-    button_boxplot_parking = st.button("Show Price Distribution by Parking")
-
     # Data Types and Unique Value Counts
-    if button_data_types:
-        with col1:
-            st.write("<h4 style='font-size: 20px; font-weight: bold;'>Data Types and Unique Value Counts</h4>", unsafe_allow_html=True)
-            st.write(df.dtypes)  # Show data types
+    with col1:
+        st.write("<h4 style='font-size: 20px; font-weight: bold;'>Data Types and Unique Value Counts</h4>", unsafe_allow_html=True)
+        st.write(df.dtypes)  # Show data types
 
-        with col2:
-            st.write("<h4 style='font-size: 20px; font-weight: bold;'>Unique Value Counts for Each Column</h4>", unsafe_allow_html=True)
-            st.write(df.nunique())
+    with col2:
+        st.write("<h4 style='font-size: 20px; font-weight: bold;'>Unique Value Counts for Each Column</h4>", unsafe_allow_html=True)
+        st.write(df.nunique())
 
     # Price Distribution
-    if button_price_distribution:
-        with col1:
-            st.write("<h4 style='font-size: 20px; font-weight: bold;'>Price Distribution (Histogram with KDE)</h4>", unsafe_allow_html=True)
-            fig, ax = plt.subplots(figsize=(8, 5))
-            sns.histplot(df['price'], kde=True, bins=30, ax=ax, color='skyblue')
-            st.pyplot(fig)
-
-    # Missing Values Heatmap
-    if button_missing_values:
-        with col2:
-            st.write("<h4 style='font-size: 20px; font-weight: bold;'>Missing Values Heatmap</h4>", unsafe_allow_html=True)
-            fig, ax = plt.subplots(figsize=(8, 5))
-            sns.heatmap(df.isnull(), cbar=False, cmap='viridis', ax=ax)
-            st.pyplot(fig)
-
-    # Correlation Heatmap
-    if button_correlation:
-        st.write("<h4 style='font-size: 20px; font-weight: bold;'>Correlation Heatmap</h4>", unsafe_allow_html=True)
-        fig, ax = plt.subplots(figsize=(12, 8))
-        sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt='.2f', ax=ax)
-        ax.set_title("Feature Correlation", fontsize=22, fontweight='bold')
+    with col1:
+        st.write("<h4 style='font-size: 20px; font-weight: bold;'>Price Distribution (Histogram with KDE)</h4>", unsafe_allow_html=True)
+        fig, ax = plt.subplots(figsize=(8, 5))
+        sns.histplot(df['price'], kde=True, bins=30, ax=ax, color='skyblue')
         st.pyplot(fig)
 
-    # Pairplot of Selected Features
-    if button_pairplot:
-        st.write("<h4 style='font-size: 20px; font-weight: bold;'>Pairplot of Selected Features</h4>", unsafe_allow_html=True)
-        pairplot_fig = sns.pairplot(df[['price', 'area', 'bedrooms', 'bathrooms', 'stories', 'parking']], palette='coolwarm')
-        st.pyplot(pairplot_fig)
+    with col2:
+        st.write("<h4 style='font-size: 20px; font-weight: bold;'>Missing Values Heatmap</h4>", unsafe_allow_html=True)
+        fig, ax = plt.subplots(figsize=(8, 5))
+        sns.heatmap(df.isnull(), cbar=False, cmap='viridis', ax=ax)
+        st.pyplot(fig)
 
+    categorical_cols = df.select_dtypes(include=['object']).columns
+
+    # Use .map() to convert categorical columns like 'yes'/'no' to numeric values
+    for col in categorical_cols:
+        if df[col].dtype == 'object':
+            df[col] = df[col].map({'yes': 1, 'no': 0}).fillna(df[col])
+
+    # Perform one-hot encoding for any remaining categorical columns
+    df = pd.get_dummies(df, drop_first=True)
+
+    # Now calculate and plot the correlation heatmap
+    st.write("<h4 style='font-size: 20px; font-weight: bold;'>Correlation Heatmap</h4>", unsafe_allow_html=True)
+
+    # Generate the heatmap
+    fig, ax = plt.subplots(figsize=(12, 8))
+    sns.heatmap(df.corr(), annot=True, cmap='coolwarm', fmt='.2f', ax=ax)
+    ax.set_title("Feature Correlation", fontsize=22, fontweight='bold')
+
+    # Display the plot in Streamlit
+    st.pyplot(fig)
+    
+
+    # Pairplot
+    st.write("<h4 style='font-size: 20px; font-weight: bold;'>Pairplot of Selected Features</h4>", unsafe_allow_html=True)
+    pairplot_fig = sns.pairplot(df[['price', 'area', 'bedrooms', 'bathrooms', 'stories', 'parking']], palette='coolwarm')
+    st.pyplot(pairplot_fig)
+    
     # Boxplot of Price Distribution by Number of Bedrooms
-    if button_boxplot_bedrooms:
-        st.write("<h4 style='font-size: 20px; font-weight: bold;'>Price Distribution by Number of Bedrooms</h4>", unsafe_allow_html=True)
-        fig, ax = plt.subplots(figsize=(8, 6))
-        sns.boxplot(x=df['bedrooms'], y=df['price'], ax=ax, palette='Set2')
-        ax.set_title("Price Distribution by Bedrooms", fontsize=22, fontweight='bold')
-        st.pyplot(fig)
-
+    st.write("<h4 style='font-size: 20px; font-weight: bold;'>Price Distribution by Number of Bedrooms</h4>", unsafe_allow_html=True)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.boxplot(x=df['bedrooms'], y=df['price'], ax=ax, palette='Set2')
+    ax.set_title("Price Distribution by Bedrooms", fontsize=22, fontweight='bold')
+    st.pyplot(fig)
+    
     # Scatter Plot - Relationship between 'area' and 'price'
-    if button_scatter_area_price:
-        st.write("<h4 style='font-size: 20px; font-weight: bold;'>Price vs Area</h4>", unsafe_allow_html=True)
-        fig, ax = plt.subplots(figsize=(8, 6))
-        sns.scatterplot(x=df['area'], y=df['price'], ax=ax)
-        ax.set_title("Price vs Area", fontsize=22, fontweight='bold')
-        ax.set_xlabel("Area", fontsize=18)
-        ax.set_ylabel("Price", fontsize=18)
-        st.pyplot(fig)
+    st.write("<h4 style='font-size: 20px; font-weight: bold;'>Price vs Area</h4>", unsafe_allow_html=True)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.scatterplot(x=df['area'], y=df['price'], ax=ax)
+    ax.set_title("Price vs Area", fontsize=22, fontweight='bold')
+    ax.set_xlabel("Area", fontsize=18)
+    ax.set_ylabel("Price", fontsize=18)
+    st.pyplot(fig)
 
     # Boxplot of Price Distribution by Parking Availability
-    if button_boxplot_parking:
-        st.write("<h4 style='font-size: 20px; font-weight: bold;'>Price Distribution by Parking Availability</h4>", unsafe_allow_html=True)
-        fig, ax = plt.subplots(figsize=(8, 6))
-        sns.boxplot(x=df['parking'], y=df['price'], ax=ax)
-        ax.set_title("Price Distribution by Parking", fontsize=22, fontweight='bold')
-        st.pyplot(fig)
+    st.write("<h4 style='font-size: 20px; font-weight: bold;'>Price Distribution by Parking Availability</h4>", unsafe_allow_html=True)
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sns.boxplot(x=df['parking'], y=df['price'], ax=ax)
+    ax.set_title("Price Distribution by Parking", fontsize=22, fontweight='bold')
+    st.pyplot(fig)
 
 # Model Evaluation Section
 if button_model:
@@ -237,6 +232,7 @@ button_conclusion = st.sidebar.button("Show Conclusion")
 if button_conclusion:
     st.markdown("<h2 style='text-align: center; font-size: 32px; color: white;'>Conclusion: Key Takeaways from the Housing Price Prediction Project</h2>", unsafe_allow_html=True)
 
+    # Displaying the data under key takeaways in a more structured format
     st.markdown("<h4 style='font-size: 24px; font-weight: bold; color: white;'>Data Exploration & Preprocessing:</h4>", unsafe_allow_html=True)
     st.markdown("""
     - The dataset provided valuable insights into the features influencing housing prices.
